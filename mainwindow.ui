@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Finestra principale MarioQ</string>
+   <string>Prova dal mio Xubuntu</string>
   </property>
   <widget class="QWidget" name="centralWidget"/>
   <widget class="QToolBar" name="mainToolBar">
