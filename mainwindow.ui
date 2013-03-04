@@ -14,16 +14,6 @@
    <string>VideoCapture</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="WidgetImageCaptured" native="true">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>30</y>
-      <width>241</width>
-      <height>191</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="btnProva">
     <property name="geometry">
      <rect>
@@ -35,6 +25,19 @@
     </property>
     <property name="text">
      <string>PushButton</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="WidgetImageLabel">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>40</y>
+      <width>171</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>
