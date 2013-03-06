@@ -18,7 +18,7 @@ public:
 
 private slots:
     void on_btnProva_clicked();
-    QImage putImage(const cv::Mat&);
+    void draw(QImage img);
 
 private:
     Ui::MainWindow *ui;
