@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <opencv2/opencv.hpp>
 
 namespace Ui {
 class MainWindow;
@@ -17,7 +16,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_btnProva_clicked();
     void draw(QImage img);
 
 private:

@@ -13,17 +13,20 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    capturethread.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    capturethread.h
 
 FORMS    += mainwindow.ui
 
-INCLUDEPATH += /usr/local/include/opencv
+INCLUDEPATH += /usr/include/opencv
 LIBS += -L/usr/local/lib
 LIBS += -lopencv_core
 #LIBS += -lopencv_imgproc
 LIBS += -lopencv_highgui
+LIBS += -ldecodeqr
 #LIBS += -lopencv_ml
 #LIBS += -lopencv_video
 #LIBS += -lopencv_features2d

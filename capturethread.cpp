@@ -1,5 +1,6 @@
 #include "capturethread.h"
 #include "mainwindow.h"
+#include <decodeqr.h>
 #include <opencv2/opencv.hpp>
 
 
@@ -50,26 +51,48 @@ void CaptureThread::run()
     int cameraIndex = 0;
     bool stopFlag = false;
 
-    qDebug() << "Opening camera" << cameraIndex ;
+    qDebug() << "Si apre la webcam" << cameraIndex ;
     capture.open(cameraIndex);
 
     if(!capture.isOpened()){
-        qDebug() << "Could not open camera" << cameraIndex;
+        qDebug() << "Non si può aprire la webcam" << cameraIndex;
         return;
     }
 
     while(!stopFlag){
         capture >> frame;
-        qDebug() << "Frame Width = " << frame.cols << "Frame Height = " << frame.rows;
         if(frame.cols ==0 || frame.rows==0){
-            qDebug() << "Invalid frame skipping";
+            qDebug() << "Salto di un frame";
             continue;
         }
         Mat currentFrame=Mat(frame);
         img = MatToQImage(currentFrame); //Custom function
 
         emit newFrame(img);
+        QrDecoderHandle decoder=qr_decoder_open();
+
+        IplImage iplframe = frame;
+        qr_decoder_decode_image(decoder,&iplframe);
+
+        //
+        // get QR code header
+        //
+        QrCodeHeader header;
+        if(qr_decoder_get_header(decoder,&header)){
+            //
+            // get QR code text
+            // To null terminate, a buffer size is larger than body size.
+            //
+            char *buf=new char[header.byte_size+1];
+            qr_decoder_get_body(decoder,(unsigned char *)buf,header.byte_size+1);
+            qDebug() << "Stringa:" << buf;
+        }
+
+        //
+        // finalize
+        //
+        qr_decoder_close(decoder);
     }
     capture.release();
-    qDebug() << "Thread returning";
+    qDebug() << "Chiusura del thread";
 } // run()
