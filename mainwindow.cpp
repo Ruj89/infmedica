@@ -18,5 +18,6 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::draw(QImage img){
+    img = img.scaled(ui->WidgetImageLabel->width(), ui->WidgetImageLabel->height());
     ui->WidgetImageLabel->setPixmap(QPixmap::fromImage(img));
 }
