@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     //Configura l'ambiente grafico
     ui->setupUi(this);
+    QWidget::showFullScreen();
+    //QWidget::showMaximized();
 
     // Inizializza e avvia il thread per il riconoscimento dell'immagine
     CaptureThread *captureThread = new CaptureThread();
