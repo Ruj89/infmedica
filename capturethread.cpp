@@ -53,7 +53,7 @@ void CaptureThread::run()
             CURL *curl;
 
             curl = curl_easy_init();
-            curl_easy_setopt(curl, CURLOPT_URL, "/infmedica/getData.php?id=");
+            curl_easy_setopt(curl, CURLOPT_URL, "http://localhost/infmedica/getData.php?id=20231A7B836C9E8521AFB32D");
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CaptureThread::writer);
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, &temp);
             curl_easy_perform(curl);
@@ -71,8 +71,8 @@ void CaptureThread::run()
 
 int CaptureThread::writer(void *ptr, size_t size, size_t nmemb, string stream)
 {
-    string temp(static_cast<const char*>(ptr), size * nmemb);
-    stream = temp;
+    stream = string(static_cast<const char*>(ptr), size * nmemb);
+//    stream = temp;
     return size*nmemb;
 }
 
