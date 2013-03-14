@@ -20,6 +20,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    void keyReleaseEvent ( QKeyEvent * event );
+
 };
 
 #endif // MAINWINDOW_H

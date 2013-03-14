@@ -35,3 +35,7 @@ void MainWindow::draw(QImage img){
     // Associa l'immagine alla label
     ui->WidgetImageLabel->setPixmap(QPixmap::fromImage(img));
 }
+
+void MainWindow::keyReleaseEvent ( QKeyEvent * event ){
+    if(event->key() == Qt::Key_Escape) close();
+}
