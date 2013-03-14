@@ -64,7 +64,7 @@ void CaptureThread::run()
             Json::Value root;   // will contains the root value after parsing.
             Json::Reader reader;
             reader.parse( temp, root );
-            qDebug() << QString::fromStdString(root["anagrafica"]["Cf"]);
+            qDebug() << QString::fromStdString(root["anagrafica"]["Cf"].asString());
         }
 
         // Converti l'immagine in un formato delle Qt e disegnalo
