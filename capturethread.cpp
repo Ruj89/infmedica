@@ -3,6 +3,7 @@
 #include <decodeqr.h>
 #include <opencv2/opencv.hpp>
 #include <curl/curl.h>
+#include <jsoncpp/json/json.h>
 #include <QDebug>
 
 CaptureThread::CaptureThread() : QThread()
@@ -59,6 +60,11 @@ void CaptureThread::run()
             curl_easy_perform(curl);
             curl_easy_cleanup(curl);
             qDebug() << QString::fromStdString(temp);
+
+            Json::Value root;   // will contains the root value after parsing.
+            Json::Reader reader;
+            reader.parse( temp, root );
+            qDebug() << QString::fromStdString(root["anagrafica"]["Cf"]);
         }
 
         // Converti l'immagine in un formato delle Qt e disegnalo
@@ -72,7 +78,6 @@ void CaptureThread::run()
 int CaptureThread::writer(void *ptr, size_t size, size_t nmemb, string stream)
 {
     stream = string(static_cast<const char*>(ptr), size * nmemb);
-//    stream = temp;
     return size*nmemb;
 }
 
