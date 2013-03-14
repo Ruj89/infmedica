@@ -6,9 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1064</width>
-    <height>788</height>
+    <width>1024</width>
+    <height>768</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::ClickFocus</enum>
   </property>
   <property name="windowTitle">
    <string>VideoCapture</string>
@@ -17,11 +26,20 @@
    <widget class="QGroupBox" name="groupBoxMain">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>10</y>
+      <x>0</x>
+      <y>0</y>
       <width>1024</width>
       <height>768</height>
      </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
     </property>
     <property name="styleSheet">
      <string notr="true">#groupBoxMain{ border: 1px solid red }</string>
@@ -43,8 +61,8 @@
       <rect>
        <x>370</x>
        <y>20</y>
-       <width>401</width>
-       <height>231</height>
+       <width>181</width>
+       <height>171</height>
       </rect>
      </property>
      <property name="sizePolicy">
@@ -68,15 +86,6 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
