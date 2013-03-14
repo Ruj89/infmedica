@@ -23,8 +23,17 @@
       <height>768</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">#groupBoxMain{ border: 1px solid red }</string>
+    </property>
     <property name="title">
      <string>GroupBox</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
     </property>
     <widget class="QLabel" name="WidgetImageLabel">
      <property name="enabled">
