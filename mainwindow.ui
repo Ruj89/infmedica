@@ -6,44 +6,57 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>614</width>
-    <height>420</height>
+    <width>1064</width>
+    <height>788</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>VideoCapture</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="WidgetImageLabel">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
+   <widget class="QGroupBox" name="groupBoxMain">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>30</y>
-      <width>361</width>
-      <height>241</height>
+      <x>20</x>
+      <y>10</y>
+      <width>1024</width>
+      <height>768</height>
      </rect>
     </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
+    <property name="title">
+     <string>GroupBox</string>
     </property>
-    <property name="frameShape">
-     <enum>QFrame::Box</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
+    <widget class="QLabel" name="WidgetImageLabel">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>20</y>
+       <width>181</width>
+       <height>171</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
