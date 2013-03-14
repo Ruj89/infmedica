@@ -17,12 +17,14 @@ public:
     int timesCheckedQRCode;
     QString qrcode;
     CaptureThread();
-    std::string temp;
+    std::string jsondata;
     static int writer(void *ptr, size_t size, size_t nmemb, string stream);
 private:
     QLabel* label;
     QImage MatToQImage(const Mat& mat);
     QString getQRCode(cv::Mat );
+    bool getUserJson(QString id);
+    void parseJson();
 protected:
     void run();
 signals:

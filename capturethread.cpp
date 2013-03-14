@@ -51,20 +51,7 @@ void CaptureThread::run()
         // Il codice è prelevato con successo, quindi richiesta al webserver
         if(timesCheckedQRCode == 5){
             qDebug() << "Stringa individuata 5 volte:" << qrcode;
-            CURL *curl;
-
-            curl = curl_easy_init();
-            curl_easy_setopt(curl, CURLOPT_URL, "http://localhost/infmedica/getData.php?id=20231A7B836C9E8521AFB32D");
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CaptureThread::writer);
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, &temp);
-            curl_easy_perform(curl);
-            curl_easy_cleanup(curl);
-            qDebug() << QString::fromStdString(temp);
-
-            Json::Value root;   // will contains the root value after parsing.
-            Json::Reader reader;
-            reader.parse( temp, root );
-            qDebug() << QString::fromStdString(root["anagrafica"]["Cf"].asString());
+            if(getUserJson(qrcode)) parseJson();
         }
 
         // Converti l'immagine in un formato delle Qt e disegnalo
@@ -149,3 +136,43 @@ QImage CaptureThread::MatToQImage(const Mat& mat)
     }
 }
 
+bool CaptureThread::getUserJson(QString id){
+    CURL *curl;
+    CURLcode code;
+
+    curl = curl_easy_init();
+    if(curl == NULL){
+        qDebug() << "Impossibile inizializzare la libreria cURL";
+        return false;
+    }
+    code = curl_easy_setopt(curl, CURLOPT_URL, ("http://localhost/infmedica/getData.php?id="+id.toStdString()).c_str());
+    if (code != CURLE_OK){
+        qDebug() << "Impossibile impostare CURLOPT_URL";
+        return false;
+    }
+    code = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CaptureThread::writer);
+    if (code != CURLE_OK){
+        qDebug() << "Impossibile impostare CURLOPT_WRITEFUNCTION";
+        return false;
+    }
+    code = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &jsondata);
+    if (code != CURLE_OK){
+        qDebug() << "Impossibile impostare CURLOPT_WRITEDATA";
+        return false;
+    }
+    code = curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+    if (code != CURLE_OK){
+        qDebug() << "Connessione all'indirizzo http://localhost/infmedica/getData.php?id=" << id << "fallita";
+        return false;
+    }
+    qDebug() << QString::fromStdString(jsondata);
+    return true;
+}
+
+void CaptureThread::parseJson(){
+    Json::Value root;   // will contains the root value after parsing.
+    Json::Reader reader;
+    reader.parse( jsondata, root );
+    qDebug() << QString::fromStdString(root["anagrafica"]["Cf"].asString());
+}
