@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include <decodeqr.h>
 #include <opencv2/opencv.hpp>
+#include <curl/curl.h>
 #include <QDebug>
 
 CaptureThread::CaptureThread() : QThread()
@@ -49,7 +50,15 @@ void CaptureThread::run()
         // Il codice è prelevato con successo, quindi richiesta al webserver
         if(timesCheckedQRCode == 5){
             qDebug() << "Stringa individuata 5 volte:" << qrcode;
+            CURL *curl;
 
+            curl = curl_easy_init();
+            curl_easy_setopt(curl, CURLOPT_URL, "/infmedica/getData.php?id=");
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CaptureThread::writer);
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, &temp);
+            curl_easy_perform(curl);
+            curl_easy_cleanup(curl);
+            qDebug() << QString::fromStdString(temp);
         }
 
         // Converti l'immagine in un formato delle Qt e disegnalo
@@ -58,6 +67,13 @@ void CaptureThread::run()
     }
     capture.release();
     qDebug() << "Chiusura del thread";
+}
+
+int CaptureThread::writer(void *ptr, size_t size, size_t nmemb, string stream)
+{
+    string temp(static_cast<const char*>(ptr), size * nmemb);
+    stream = temp;
+    return size*nmemb;
 }
 
 /*

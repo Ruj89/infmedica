@@ -17,6 +17,8 @@ public:
     int timesCheckedQRCode;
     QString qrcode;
     CaptureThread();
+    std::string temp;
+    static int writer(void *ptr, size_t size, size_t nmemb, string stream);
 private:
     QLabel* label;
     QImage MatToQImage(const Mat& mat);

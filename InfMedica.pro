@@ -27,6 +27,7 @@ LIBS += -lopencv_core
 #LIBS += -lopencv_imgproc
 LIBS += -lopencv_highgui
 LIBS += -ldecodeqr
+LIBS += -lcurl
 #LIBS += -lopencv_ml
 #LIBS += -lopencv_video
 #LIBS += -lopencv_features2d
