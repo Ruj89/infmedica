@@ -3,7 +3,6 @@
 #include <decodeqr.h>
 #include <opencv2/opencv.hpp>
 #include <curl/curl.h>
-#include <jsoncpp/json/json.h>
 #include <QDebug>
 
 CaptureThread::CaptureThread() : QThread()
@@ -174,5 +173,5 @@ void CaptureThread::parseJson(){
     Json::Value root;   // will contains the root value after parsing.
     Json::Reader reader;
     reader.parse( jsondata, root );
-    qDebug() << QString::fromStdString(root["anagrafica"]["Cf"].asString());
+    emit pushData(root);
 }

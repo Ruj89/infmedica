@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <jsoncpp/json/json.h>
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +18,7 @@ public:
 
 private slots:
     void draw(QImage img);
+    void setValues (Json::Value values);
 
 private:
     Ui::MainWindow *ui;

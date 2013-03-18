@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QtGui>
 #include "opencv/highgui.h"
+#include <jsoncpp/json/json.h>
 
 using namespace cv;
 
@@ -29,5 +30,6 @@ protected:
     void run();
 signals:
     void newFrame(const QImage &frame);
+    void pushData(Json::Value);
 };
 #endif // CAPTURETHREAD_H
