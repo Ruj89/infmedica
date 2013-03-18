@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     captureThread->start();
     // Configura l'evento per il disegno dell'UI
     connect(captureThread,SIGNAL(newFrame(QImage)),this,SLOT(draw(QImage)));
-    connect(captureThread,SIGNAL(parseJson(Json::Value)),this,SLOT(setValues(Json::Value)));
+    connect(captureThread,SIGNAL(parseData(Json::Value)),this,SLOT(setValues(Json::Value)));
 }
 
 MainWindow::~MainWindow()
