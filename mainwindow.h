@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <jsoncpp/json/json.h>
+#include "capturethread.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,9 +26,11 @@ private slots:
 private:
     Ui::MainWindow *ui;
     void keyReleaseEvent ( QKeyEvent * event );
+    CaptureThread* captureThread;
 
 signals:
     void setState(QString state);
+    void stopMainThread();
 
 };
 

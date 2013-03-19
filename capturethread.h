@@ -25,6 +25,7 @@ public:
 private:
     QString qrcode_old;
     QLabel* label;
+    bool stopFlag;
     QImage MatToQImage(const Mat& mat);
     QString getQRCode(cv::Mat );
     int timesCheckedQRCode;
@@ -39,5 +40,7 @@ signals:
     void pushData(Json::Value);
     void setImage(QImage img);
     void setState(QString state);
+private slots:
+    void endMainLoop();
 };
 #endif // CAPTURETHREAD_H

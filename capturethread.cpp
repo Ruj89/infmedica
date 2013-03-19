@@ -13,7 +13,10 @@ CaptureThread::CaptureThread() : QThread()
     timesCheckedQRCode = 0;
     qrcode = "";
     empty_code = 0;
+    stopFlag = false;
 }
+
+
 
 void CaptureThread::run()
 {
@@ -21,7 +24,6 @@ void CaptureThread::run()
     cv::Mat frame;
     QImage img;
     int cameraIndex = 0;
-    bool stopFlag = false;
 
     // Apertura della webcam
     qDebug() << "Si apre la webcam" << cameraIndex ;
@@ -54,6 +56,7 @@ void CaptureThread::run()
             }
         } else empty_code++;
 
+        // Segnala lo stato di attesa
         if(empty_code>50) emit setState("In attesa");
 
         // Il codice è prelevato con successo, quindi richiesta al webserver
@@ -62,6 +65,7 @@ void CaptureThread::run()
             qDebug() << "Stringa individuata 5 volte:" << qrcode;
             if(getUserJson(qrcode)){
                 qrcode_old = qrcode;
+                // Parsing della JSON string ricavata
                 parseJson();
             }
         }
@@ -74,12 +78,22 @@ void CaptureThread::run()
     qDebug() << "Chiusura del thread";
 }
 
+/*
+ * writer
+ * Descrizione: Scrittura della risposta dalla cURL in una stringa
+ * Parametri: come CURLOPT_WRITEFUNCTION
+ * */
 int CaptureThread::writer(void *ptr, size_t size, size_t nmemb, string stream)
 {
     stream = string(static_cast<const char*>(ptr), size * nmemb);
     return size*nmemb;
 }
 
+/*
+ * writerImage
+ * Descrizione: Scrittura della risposta dalla cURL in un array di byte
+ * Parametri: come CURLOPT_WRITEFUNCTION
+ * */
 int CaptureThread::writerImage(void *ptr, size_t size, size_t nmemb, QByteArray buffer)
 {
     buffer.append(static_cast<const char*>(ptr), size * nmemb);
@@ -154,31 +168,44 @@ QImage CaptureThread::MatToQImage(const Mat& mat)
     }
 }
 
+/*
+ * getUserJson
+ * Descrizione: Ricava i dati in formato JSON dal server
+ * Parametri:
+ * - id: id del paziente
+ * */
 bool CaptureThread::getUserJson(QString id){
     CURL *curl;
     CURLcode code;
+    emit setState("Caricamento dei dati");
 
+    // Inizializza la libreria
     curl = curl_easy_init();
     if(curl == NULL){
         qDebug() << "Impossibile inizializzare la libreria cURL";
         return false;
     }
+    // Imposta l'indirizzo da prelevare
     code = curl_easy_setopt(curl, CURLOPT_URL, ("http://localhost/infmedica/getData.php?id="+id.toUpper().toStdString()).c_str());
     if (code != CURLE_OK){
         qDebug() << "Impossibile impostare CURLOPT_URL";
         return false;
     }
+    // Imposta la funzione di writer
     code = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CaptureThread::writer);
     if (code != CURLE_OK){
         qDebug() << "Impossibile impostare CURLOPT_WRITEFUNCTION";
         return false;
     }
+    // Imposta la variabile sulla quale scrivere
     code = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &jsondata);
     if (code != CURLE_OK){
         qDebug() << "Impossibile impostare CURLOPT_WRITEDATA";
         return false;
     }
+    // Effettua la richiesta al server
     code = curl_easy_perform(curl);
+    // Fa il cleanup della richiesta
     curl_easy_cleanup(curl);
     if (code != CURLE_OK){
         qDebug() << "Connessione all'indirizzo http://localhost/infmedica/getData.php?id=" << id << "fallita";
@@ -188,42 +215,67 @@ bool CaptureThread::getUserJson(QString id){
     return true;
 }
 
+/*
+ * getUserImage
+ * Descrizione: Ricava l'immagine formato fototessera del paziente
+ * Parametri:
+ * - url: indirizzo web dell'immagine
+ * */
 void CaptureThread::getUserImage(QString url){
-    emit setState("Caricamento dell'immagine formato fototessera...");
+    emit setState("Caricamento della fototessera");
     CURL *curl;
     CURLcode code;
 
+    // Inizializza la libreria
     curl = curl_easy_init();
     if(curl == NULL){
         qDebug() << "Impossibile inizializzare la libreria cURL";
     }
+    // Imposta l'indirizzo da prelevare
     code = curl_easy_setopt(curl, CURLOPT_URL, url.toStdString().c_str());
     if (code != CURLE_OK){
         qDebug() << "Impossibile impostare CURLOPT_URL";
     }
+    // Imposta la funzione di writer
     code = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CaptureThread::writerImage);
     if (code != CURLE_OK){
         qDebug() << "Impossibile impostare CURLOPT_WRITEFUNCTION";
     }
+    // Imposta la variabile sulla quale scrivere
+    userimage = QByteArray();
     code = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &userimage);
     if (code != CURLE_OK){
         qDebug() << "Impossibile impostare CURLOPT_WRITEDATA";
     }
-    userimage = QByteArray();
+    // Effettua la richiesta al server
     code = curl_easy_perform(curl);
+    // Fa il cleanup della richiesta
     curl_easy_cleanup(curl);
     if (code != CURLE_OK){
         qDebug() << "Connessione all'indirizzo" << url << "fallita";
     }
     QImage* img2 = new QImage();
+    // Trasforma i raw data nel formato immagine delle Qt
     img2->loadFromData(userimage);
     emit setImage(*img2);
 }
 
+/*
+ * parseJson
+ * Descrizione: Effettua il parsing della stringa JSON da inviare alla view e ricava
+ *      l'url della fototessera da inserire
+ * */
 void CaptureThread::parseJson(){
-    Json::Value root;   // will contains the root value after parsing.
+    Json::Value root;
     Json::Reader reader;
+    // Effettua il parsing del JSON
     reader.parse( jsondata, root );
     emit pushData(root);
+    // Ottieni l'immagine formato fototessera
     getUserImage(QString::fromStdString(root["anagrafica"]["foto"].asString()));
+}
+
+
+void CaptureThread::endMainLoop(){
+    stopFlag = true;
 }
