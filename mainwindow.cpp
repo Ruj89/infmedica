@@ -49,8 +49,24 @@ void MainWindow::setValues (Json::Value values){
     ui->labelCF->setText(QString::fromStdString(values["anagrafica"]["Cf"].asString()));
     ui->labelNome->setText(QString::fromStdString(values["anagrafica"]["nome"].asString()));
     ui->labelCognome->setText(QString::fromStdString(values["anagrafica"]["cognome"].asString()));
-    ui->labelData->setText(QString::fromStdString(values["anagrafica"]["dataNascita"].asString()));
+    QDate datenew(QDate::fromString(
+                              QString::fromStdString(values["anagrafica"]["dataNascita"].asString()),
+                              "yyyy-MM-dd"));
+    ui->labelData->setText(datenew.toString("dd-MM-yyyy"));
     ui->labelTelefono->setText(QString::fromStdString(values["anagrafica"]["telefono"].asString()));
+    while (ui->tableWidget->rowCount() != 0)
+        ui->tableWidget->removeRow(0);
+    for(unsigned int i=0;i<values["medicine"].size();i++){
+        ui->tableWidget->setRowCount(ui->tableWidget->rowCount()+1);
+        int row = ui->tableWidget->rowCount()-1;
+        qDebug() << QString::fromStdString(values["medicine"][i]["nomeMedicina"].asString());
+        ui->tableWidget->setItem(row, 0, new QTableWidgetItem(QString::fromStdString(values["medicine"][i]["nomeMedicina"].asString())));
+        ui->tableWidget->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(values["medicine"][i]["qnt"].asString())));
+        QTime timenew(QTime::fromString(
+                        QString::fromStdString(values["medicine"][i]["orarioSomministrazione"].asString()),
+                        "hh:mm:ss"));
+        ui->tableWidget->setItem(row, 2, new QTableWidgetItem(timenew.toString("hh:mm")));
+    }
 }
 
 void MainWindow::setUserImage (QImage img){
