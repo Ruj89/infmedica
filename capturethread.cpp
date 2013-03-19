@@ -41,6 +41,7 @@ void CaptureThread::run()
         if(qrcode_decoded != ""){
             if (qrcode_decoded == qrcode){
                 timesCheckedQRCode++;
+                qDebug() << "Stringa individuata" << timesCheckedQRCode << "volte.";
             } else {
                 timesCheckedQRCode = 1;
                 qrcode = QString(qrcode_decoded);
@@ -144,7 +145,7 @@ bool CaptureThread::getUserJson(QString id){
         qDebug() << "Impossibile inizializzare la libreria cURL";
         return false;
     }
-    code = curl_easy_setopt(curl, CURLOPT_URL, ("http://localhost/infmedica/getData.php?id="+id.toStdString()).c_str());
+    code = curl_easy_setopt(curl, CURLOPT_URL, ("http://localhost/infmedica/getData.php?id="+id.toUpper().toStdString().c_str());
     if (code != CURLE_OK){
         qDebug() << "Impossibile impostare CURLOPT_URL";
         return false;
