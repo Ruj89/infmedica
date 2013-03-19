@@ -71,6 +71,12 @@ int CaptureThread::writer(void *ptr, size_t size, size_t nmemb, string stream)
     return size*nmemb;
 }
 
+int CaptureThread::writerImage(void *ptr, size_t size, size_t nmemb, QByteArray buffer)
+{
+    buffer.append(static_cast<const char*>(ptr), size * nmemb);
+    return size*nmemb;
+}
+
 /*
  * getQRCode
  * Descrizione: Riconosce un eventuale codice qr presente in un'immagine
@@ -174,21 +180,34 @@ bool CaptureThread::getUserJson(QString id){
 }
 
 void CaptureThread::getUserImage(QString url){
-    QNetworkAccessManager* manager = new QNetworkAccessManager ();
-    QNetworkRequest req;
-    qDebug() << "Connessione all'immagine" << url;
-    req.setUrl(QUrl(url));
-    req.setRawHeader("User-Agent", "Prova");
-    rep = manager->get(req);
+    CURL *curl;
+    CURLcode code;
 
-    connect (rep, SIGNAL(finished()), this, SLOT(replyFinish ()));
-
-}
-
-void CaptureThread::replyFinish (){
-    qDebug() << "Replay";
+    curl = curl_easy_init();
+    if(curl == NULL){
+        qDebug() << "Impossibile inizializzare la libreria cURL";
+    }
+    code = curl_easy_setopt(curl, CURLOPT_URL, url.toStdString().c_str());
+    if (code != CURLE_OK){
+        qDebug() << "Impossibile impostare CURLOPT_URL";
+    }
+    code = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CaptureThread::writerImage);
+    if (code != CURLE_OK){
+        qDebug() << "Impossibile impostare CURLOPT_WRITEFUNCTION";
+    }
+    code = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &userimage);
+    if (code != CURLE_OK){
+        qDebug() << "Impossibile impostare CURLOPT_WRITEDATA";
+    }
+    userimage = QByteArray();
+    code = curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+    if (code != CURLE_OK){
+        qDebug() << "Connessione all'indirizzo" << url << "fallita";
+    }
     QImage* img2 = new QImage();
-    img2->loadFromData(rep->readAll());
+    img2->loadFromData(userimage);
+
     emit setImage(*img2);
 }
 
