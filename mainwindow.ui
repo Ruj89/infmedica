@@ -239,9 +239,8 @@
                 <property name="font">
                  <font>
                   <pointsize>16</pointsize>
-                  <weight>75</weight>
-                  <italic>true</italic>
-                  <bold>true</bold>
+                  <weight>50</weight>
+                  <bold>false</bold>
                  </font>
                 </property>
                 <property name="text">

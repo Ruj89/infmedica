@@ -47,6 +47,10 @@ void MainWindow::keyReleaseEvent ( QKeyEvent * event ){
 void MainWindow::setValues (Json::Value values){
     qDebug() << QString::fromStdString((values["anagrafica"]["Cf"]).asString());
     ui->labelCF->setText(QString::fromStdString(values["anagrafica"]["Cf"].asString()));
+    ui->labelNome->setText(QString::fromStdString(values["anagrafica"]["nome"].asString()));
+    ui->labelCognome->setText(QString::fromStdString(values["anagrafica"]["cognome"].asString()));
+    ui->labelData->setText(QString::fromStdString(values["anagrafica"]["dataNascita"].asString()));
+    ui->labelTelefono->setText(QString::fromStdString(values["anagrafica"]["telefono"].asString()));
 }
 
 void MainWindow::setUserImage (QImage img){
