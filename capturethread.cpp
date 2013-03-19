@@ -145,7 +145,7 @@ bool CaptureThread::getUserJson(QString id){
         qDebug() << "Impossibile inizializzare la libreria cURL";
         return false;
     }
-    code = curl_easy_setopt(curl, CURLOPT_URL, ("http://localhost/infmedica/getData.php?id="+id.toUpper().toStdString().c_str());
+    code = curl_easy_setopt(curl, CURLOPT_URL, ("http://localhost/infmedica/getData.php?id="+id.toUpper().toStdString()).c_str());
     if (code != CURLE_OK){
         qDebug() << "Impossibile impostare CURLOPT_URL";
         return false;
@@ -164,6 +164,40 @@ bool CaptureThread::getUserJson(QString id){
     curl_easy_cleanup(curl);
     if (code != CURLE_OK){
         qDebug() << "Connessione all'indirizzo http://localhost/infmedica/getData.php?id=" << id << "fallita";
+        return false;
+    }
+    qDebug() << QString::fromStdString(jsondata);
+    return true;
+}
+
+bool CaptureThread::getUserImage(QString url){
+    CURL *curl;
+    CURLcode code;
+
+    curl = curl_easy_init();
+    if(curl == NULL){
+        qDebug() << "Impossibile inizializzare la libreria cURL";
+        return false;
+    }
+    code = curl_easy_setopt(curl, CURLOPT_URL, (url.toStdString()).c_str());
+    if (code != CURLE_OK){
+        qDebug() << "Impossibile impostare CURLOPT_URL";
+        return false;
+    }
+    code = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CaptureThread::writer);
+    if (code != CURLE_OK){
+        qDebug() << "Impossibile impostare CURLOPT_WRITEFUNCTION";
+        return false;
+    }
+    code = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &jsondata);
+    if (code != CURLE_OK){
+        qDebug() << "Impossibile impostare CURLOPT_WRITEDATA";
+        return false;
+    }
+    code = curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+    if (code != CURLE_OK){
+        qDebug() << "Connessione all'indirizzo " << url << "fallita";
         return false;
     }
     qDebug() << QString::fromStdString(jsondata);

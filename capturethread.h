@@ -24,6 +24,7 @@ private:
     QLabel* label;
     QImage MatToQImage(const Mat& mat);
     QString getQRCode(cv::Mat );
+    bool getUserImage(QString);
     bool getUserJson(QString id);
     void parseJson();
 protected:
