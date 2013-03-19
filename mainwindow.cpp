@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "capturethread.h"
+#include <jsoncpp/json/json.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -16,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     captureThread->start();
     // Configura l'evento per il disegno dell'UI
     connect(captureThread,SIGNAL(newFrame(QImage)),this,SLOT(draw(QImage)));
+    qRegisterMetaType<Json::Value> ("Json::Value");
     connect(captureThread,SIGNAL(pushData(Json::Value)),this,SLOT(setValues(Json::Value)));
     connect(captureThread,SIGNAL(setImage(QImage)),this,SLOT(setUserImage(QImage)));
 }
@@ -43,7 +45,7 @@ void MainWindow::keyReleaseEvent ( QKeyEvent * event ){
 }
 
 void MainWindow::setValues (Json::Value values){
-    qDebug() << QString::fromStdString(values["anagrafica"]["Cf"].asString());
+    qDebug() << QString::fromStdString((values["anagrafica"]["Cf"]).asString());
     ui->labelCF->setText(QString::fromStdString(values["anagrafica"]["Cf"].asString()));
 }
 
