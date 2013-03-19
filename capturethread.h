@@ -23,14 +23,15 @@ public:
     std::ostringstream userimage;
     static int writer(void *ptr, size_t size, size_t nmemb, string stream);
 private:
+    QNetworkReply *rep;
     QLabel* label;
     QImage MatToQImage(const Mat& mat);
     QString getQRCode(cv::Mat );
-    bool getUserImage(QString);
+    void getUserImage(QString);
     bool getUserJson(QString id);
     void parseJson();
 private slots:
-    void replyFinish (QNetworkReply  *);
+    void replyFinish ();
 protected:
     void run();
 signals:

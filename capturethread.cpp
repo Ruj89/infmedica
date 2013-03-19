@@ -173,18 +173,22 @@ bool CaptureThread::getUserJson(QString id){
     return true;
 }
 
-bool CaptureThread::getUserImage(QString url){
+void CaptureThread::getUserImage(QString url){
     QNetworkAccessManager* manager = new QNetworkAccessManager ();
     QNetworkRequest req;
     qDebug() << "Connessione all'immagine" << url;
     req.setUrl(QUrl(url));
-    connect (manager, SIGNAL(finished(QNetworkReply *)), this, SLOT(replyFinish (QNetworkReply  *)));
-    manager->get(req);
+    req.setRawHeader("User-Agent", "Prova");
+    rep = manager->get(req);
+
+    connect (rep, SIGNAL(finished()), this, SLOT(replyFinish ()));
+
 }
 
-void CaptureThread::replyFinish (QNetworkReply  *reply){
+void CaptureThread::replyFinish (){
+    qDebug() << "Replay";
     QImage* img2 = new QImage();
-    img2->loadFromData(reply->readAll());
+    img2->loadFromData(rep->readAll());
     emit setImage(*img2);
 }
 
