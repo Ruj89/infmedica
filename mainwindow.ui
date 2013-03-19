@@ -23,7 +23,14 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>VideoCapture</string>
+   <string>qDalmatian</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="images.qrc">
+    <normaloff>:/icon.jpg</normaloff>:/icon.jpg</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#MainWindow {background: url(:/dalmata.png) bottom right no-repeat;}</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
@@ -143,6 +150,9 @@
                </property>
                <item>
                 <widget class="QLabel" name="label">
+                 <property name="styleSheet">
+                  <string notr="true">#label {background: url(:/user.jpg)}</string>
+                 </property>
                  <property name="frameShape">
                   <enum>QFrame::Box</enum>
                  </property>
@@ -520,6 +530,8 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>

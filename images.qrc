@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>dalmata.png</file>
+        <file>user.jpg</file>
+        <file>icon.jpg</file>
+    </qresource>
+</RCC>
