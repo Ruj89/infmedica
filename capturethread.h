@@ -15,7 +15,6 @@ class CaptureThread : public QThread
     Q_OBJECT
 
 public:
-    int timesCheckedQRCode;
     QString qrcode;
     CaptureThread();
     std::string jsondata;
@@ -24,9 +23,12 @@ public:
     static int writerImage(void *ptr, size_t size, size_t nmemb, QByteArray buffer);
 
 private:
+    QString qrcode_old;
     QLabel* label;
     QImage MatToQImage(const Mat& mat);
     QString getQRCode(cv::Mat );
+    int timesCheckedQRCode;
+    int empty_code;
     void getUserImage(QString);
     bool getUserJson(QString id);
     void parseJson();
@@ -36,5 +38,6 @@ signals:
     void newFrame(const QImage &frame);
     void pushData(Json::Value);
     void setImage(QImage img);
+    void setState(QString state);
 };
 #endif // CAPTURETHREAD_H

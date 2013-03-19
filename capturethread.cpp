@@ -12,6 +12,7 @@ CaptureThread::CaptureThread() : QThread()
 {
     timesCheckedQRCode = 0;
     qrcode = "";
+    empty_code = 0;
 }
 
 void CaptureThread::run()
@@ -42,19 +43,27 @@ void CaptureThread::run()
         // Preleva il codice QR dall'immagine e aggiorna il numero di volte che viene prelevato
         QString qrcode_decoded = getQRCode(frame);
         if(qrcode_decoded != ""){
+            empty_code=0;
             if (qrcode_decoded == qrcode){
                 timesCheckedQRCode++;
                 qDebug() << "Stringa individuata" << timesCheckedQRCode << "volte.";
             } else {
+                emit setState("Cattura codice");
                 timesCheckedQRCode = 1;
                 qrcode = QString(qrcode_decoded);
             }
-        }
+        } else empty_code++;
+
+        if(empty_code>50) emit setState("In attesa");
 
         // Il codice è prelevato con successo, quindi richiesta al webserver
-        if(timesCheckedQRCode == 5){
+        if(timesCheckedQRCode == 5 && qrcode_old != qrcode){
+            emit setState("Codice riconoscito!");
             qDebug() << "Stringa individuata 5 volte:" << qrcode;
-            if(getUserJson(qrcode)) parseJson();
+            if(getUserJson(qrcode)){
+                qrcode_old = qrcode;
+                parseJson();
+            }
         }
 
         // Converti l'immagine in un formato delle Qt e disegnalo
@@ -180,6 +189,7 @@ bool CaptureThread::getUserJson(QString id){
 }
 
 void CaptureThread::getUserImage(QString url){
+    emit setState("Caricamento dell'immagine formato fototessera...");
     CURL *curl;
     CURLcode code;
 
@@ -207,7 +217,6 @@ void CaptureThread::getUserImage(QString url){
     }
     QImage* img2 = new QImage();
     img2->loadFromData(userimage);
-
     emit setImage(*img2);
 }
 

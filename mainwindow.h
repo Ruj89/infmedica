@@ -20,10 +20,14 @@ private slots:
     void draw(QImage img);
     void setValues (Json::Value values);
     void setUserImage (QImage img);
+    void setAppState(QString string);
 
 private:
     Ui::MainWindow *ui;
     void keyReleaseEvent ( QKeyEvent * event );
+
+signals:
+    void setState(QString state);
 
 };
 

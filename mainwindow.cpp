@@ -20,6 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<Json::Value> ("Json::Value");
     connect(captureThread,SIGNAL(pushData(Json::Value)),this,SLOT(setValues(Json::Value)));
     connect(captureThread,SIGNAL(setImage(QImage)),this,SLOT(setUserImage(QImage)));
+    connect(captureThread,SIGNAL(setState(QString)),this,SLOT(setAppState(QString)));
+    connect(this,SIGNAL(setState(QString)),this,SLOT(setAppState(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -42,6 +44,10 @@ void MainWindow::draw(QImage img){
 
 void MainWindow::keyReleaseEvent ( QKeyEvent * event ){
     if(event->key() == Qt::Key_Escape) close();
+}
+
+void MainWindow::setAppState(QString string){
+    ui->labelState->setText(string);
 }
 
 void MainWindow::setValues (Json::Value values){
@@ -67,9 +73,12 @@ void MainWindow::setValues (Json::Value values){
                         "hh:mm:ss"));
         ui->tableWidget->setItem(row, 2, new QTableWidgetItem(timenew.toString("hh:mm")));
     }
+
+    emit setState("Dati caricati con successo!");
 }
 
 void MainWindow::setUserImage (QImage img){
     img = img.scaled(ui->label->width(), ui->label->height());
     ui->label->setPixmap(QPixmap::fromImage(img));
+    emit setState("Immagine caricata con successo!");
 }
