@@ -3,6 +3,9 @@
 #include <decodeqr.h>
 #include <opencv2/opencv.hpp>
 #include <curl/curl.h>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
 #include <QDebug>
 
 CaptureThread::CaptureThread() : QThread()
@@ -171,37 +174,18 @@ bool CaptureThread::getUserJson(QString id){
 }
 
 bool CaptureThread::getUserImage(QString url){
-    CURL *curl;
-    CURLcode code;
+    QNetworkAccessManager* manager = new QNetworkAccessManager ();
+    QNetworkRequest req;
+    qDebug() << "Connessione all'immagine" << url;
+    req.setUrl(QUrl(url));
+    connect (manager, SIGNAL(finished(QNetworkReply *)), this, SLOT(replyFinish (QNetworkReply  *)));
+    manager->get(req);
+}
 
-    curl = curl_easy_init();
-    if(curl == NULL){
-        qDebug() << "Impossibile inizializzare la libreria cURL";
-        return false;
-    }
-    code = curl_easy_setopt(curl, CURLOPT_URL, (url.toStdString()).c_str());
-    if (code != CURLE_OK){
-        qDebug() << "Impossibile impostare CURLOPT_URL";
-        return false;
-    }
-    code = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CaptureThread::writer);
-    if (code != CURLE_OK){
-        qDebug() << "Impossibile impostare CURLOPT_WRITEFUNCTION";
-        return false;
-    }
-    code = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &jsondata);
-    if (code != CURLE_OK){
-        qDebug() << "Impossibile impostare CURLOPT_WRITEDATA";
-        return false;
-    }
-    code = curl_easy_perform(curl);
-    curl_easy_cleanup(curl);
-    if (code != CURLE_OK){
-        qDebug() << "Connessione all'indirizzo " << url << "fallita";
-        return false;
-    }
-    qDebug() << QString::fromStdString(jsondata);
-    return true;
+void CaptureThread::replyFinish (QNetworkReply  *reply){
+    QImage* img2 = new QImage();
+    img2->loadFromData(reply->readAll());
+    emit setImage(*img2);
 }
 
 void CaptureThread::parseJson(){
@@ -209,4 +193,5 @@ void CaptureThread::parseJson(){
     Json::Reader reader;
     reader.parse( jsondata, root );
     emit pushData(root);
+    getUserImage(QString::fromStdString(root["anagrafica"]["foto"].asString()));
 }

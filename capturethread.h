@@ -5,6 +5,7 @@
 #include <QtGui>
 #include "opencv/highgui.h"
 #include <jsoncpp/json/json.h>
+#include <QtNetwork/QNetworkAccessManager>
 
 using namespace cv;
 
@@ -19,6 +20,7 @@ public:
     QString qrcode;
     CaptureThread();
     std::string jsondata;
+    std::ostringstream userimage;
     static int writer(void *ptr, size_t size, size_t nmemb, string stream);
 private:
     QLabel* label;
@@ -27,10 +29,13 @@ private:
     bool getUserImage(QString);
     bool getUserJson(QString id);
     void parseJson();
+private slots:
+    void replyFinish (QNetworkReply  *);
 protected:
     void run();
 signals:
     void newFrame(const QImage &frame);
     void pushData(Json::Value);
+    void setImage(QImage img);
 };
 #endif // CAPTURETHREAD_H

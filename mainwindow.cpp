@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Configura l'evento per il disegno dell'UI
     connect(captureThread,SIGNAL(newFrame(QImage)),this,SLOT(draw(QImage)));
     connect(captureThread,SIGNAL(pushData(Json::Value)),this,SLOT(setValues(Json::Value)));
+    connect(captureThread,SIGNAL(setImage(QImage)),this,SLOT(setUserImage(QImage)));
 }
 
 MainWindow::~MainWindow()
@@ -44,4 +45,9 @@ void MainWindow::keyReleaseEvent ( QKeyEvent * event ){
 void MainWindow::setValues (Json::Value values){
     qDebug() << QString::fromStdString(values["anagrafica"]["Cf"].asString());
     ui->labelCF->setText(QString::fromStdString(values["anagrafica"]["Cf"].asString()));
+}
+
+void MainWindow::setUserImage (QImage img){
+    img = img.scaled(ui->label->width(), ui->label->height());
+    ui->label->setPixmap(QPixmap::fromImage(img));
 }

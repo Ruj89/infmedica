@@ -19,6 +19,7 @@ public:
 private slots:
     void draw(QImage img);
     void setValues (Json::Value values);
+    void setUserImage (QImage img);
 
 private:
     Ui::MainWindow *ui;
