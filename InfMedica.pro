@@ -38,7 +38,10 @@ LIBS += -ljsoncpp
 #LIBS += -lopencv_legacy
 #LIBS += -lopencv_flann
 
-OTHER_FILES +=
+OTHER_FILES += \
+    user.jpg \
+    icon.jpg \
+    dalmata.png
 
 RESOURCES += \
     images.qrc
